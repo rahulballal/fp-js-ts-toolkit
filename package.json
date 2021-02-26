@@ -1,0 +1,24 @@
+{
+  "name": "fp-js-ts-toolkit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulballal/fp-js-ts-toolkit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rahulballal/fp-js-ts-toolkit/issues"
+  },
+  "homepage": "https://github.com/rahulballal/fp-js-ts-toolkit#readme",
+  "dependencies": {
+    "cli-table3": "^0.6.0",
+    "ramda": "^0.27.1"
+  }
+}
