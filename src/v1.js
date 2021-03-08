@@ -1,55 +1,53 @@
 // v1 : Lets untangle the code
-const { size } = require("lodash/fp");
-const { partition } = require("lodash");
-const moment = require("moment");
+const { size } = require('lodash/fp')
+const { partition } = require('lodash')
+const moment = require('moment')
 
 const totalPricesReducer = (accum, price) => {
-  // What are the semantics of this check ? Trying to get latest price ?
-  if (!accum || moment(accum.createdAt).isBefore(price.createdAt)) {
-    accum = price;
-  }
+	// What are the semantics of this check ? Trying to get latest price ?
+	if (!accum || moment(accum.createdAt).isBefore(price.createdAt)) {
+		accum = price
+	}
 
-  return accum;
-};
+	return accum
+}
 
 const getTotalPriceValue = ({ totalPrices = [] }) => {
-  if (size(totalPrices) === 0) {
-    return null;
-  }
+	if (size(totalPrices) === 0) {
+		return null
+	}
 
-  const { totalPriceValue } = totalPrices.reduce(totalPricesReducer, "");
+	const { totalPriceValue } = totalPrices.reduce(totalPricesReducer, '')
 
-  return totalPriceValue === "" ? null : parseFloat(totalPriceValue);
-};
+	return totalPriceValue === '' ? null : parseFloat(totalPriceValue)
+}
 
 const bidPartitionPredicate = (lowestBid) => (aBid) =>
-  getTotalPriceValue(aBid) === getTotalPriceValue(lowestBid) &&
-  !!aBid.rank &&
-  !!lowestBid.rank;
+	getTotalPriceValue(aBid) === getTotalPriceValue(lowestBid) && !!aBid.rank && !!lowestBid.rank
 
 const flagEqualLowestBids = (bids = []) => {
-  if (size(bids) === 0) {
-    return [];
-  }
+	if (size(bids) === 0) {
+		return []
+	}
 
-  const [lowestBid, ...otherBids] = bids;
+	const [lowestBid, ...otherBids] = bids
 
-  const [otherBidsTiedForLowest, otherBidsNotTiedForLowest] = partition(
-    otherBids,
-    bidPartitionPredicate(lowestBid)
-  );
+	const [otherBidsTiedForLowest, otherBidsNotTiedForLowest] = partition(
+		otherBids,
+		bidPartitionPredicate(lowestBid),
+	)
 
-  if (size(otherBidsTiedForLowest) === 0) {
-    return bids;
-  }
+	if (size(otherBidsTiedForLowest) === 0) {
+		return bids
+	}
 
-  const equalLowestBids = [lowestBid, ...otherBidsTiedForLowest];
-  const equalLowestBidFlagged = equalLowestBids.map((equalLowestBid) => ({
-    ...equalLowestBids,
-    tiedForLowest: true,
-  }));
+	const equalLowestBids = [lowestBid, ...otherBidsTiedForLowest]
+	const equalLowestBidFlagged = equalLowestBids.map((equalLowestBid) => ({
+		...equalLowestBids,
+		tiedForLowest: true,
+	}))
 
-  return [...equalLowestBidFlagged, ...otherBidsNotTiedForLowest];
-};
+	return [...equalLowestBidFlagged, ...otherBidsNotTiedForLowest]
+}
 
-module.exports = flagEqualLowestBids;
+module.exports = flagEqualLowestBids
